@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Gestión de Estudiantes</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00FF00, #FFFF00);
+            color: #ffffff;
+        }
+        .page-container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 16px 32px;
+        }
+        .card {
+            background: rgba(255,255,255,0.96);
+            border-radius: 18px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+            padding: 18px 22px;
+            margin-bottom: 22px;
+            color: #263238;
+        }
+        h1, h2 {
+            margin-top: 0;
+            color: #0d47a1;
+        }
+        label {
+            font-weight: bold;
+            color: #1565c0;
+            font-size: 13px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            margin: 4px 0 12px;
+            border-radius: 8px;
+            border: 1px solid #b0bec5;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 2px rgba(30,136,229,0.25);
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .btn-blue {
+            background: #1e88e5;
+            color: #ffffff;
+        }
+        .btn-blue:hover {
+            background: #1565c0;
+        }
+        .btn-green {
+            background: #26a69a;
+            color: #ffffff;
+        }
+        .btn-green:hover {
+            background: #1f8e84;
+        }
+        .btn-red {
+            background: #ef5350;
+            color: #ffffff;
+        }
+        .btn-red:hover {
+            background: #e53935;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #26a69a;
+            color: #00695c;
+        }
+        .btn-outline:hover {
+            background: #e0f2f1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid #eceff1;
+        }
+        th {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .col-50 {
+            flex: 1 1 280px;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #1565c0;
+            margin-top: 6px;
+        }
+        .detail-value {
+            margin-bottom: 4px;
+        }
+        .top-bar {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .tag-id {
+            color:#1e88e5;
+            font-weight:bold;
+            text-decoration:none;
+        }
+        .tag-id:hover {
+            text-decoration:underline;
+        }
+        @media (max-width: 700px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page-container">
+
+    <div class="card">
+        <div class="top-bar">
+            <div class="top-title">Sistema de Gestión de Estudiantes</div>
+            <div style="font-size: 13px; color:#607d8b;">
+
+            </div>
+        </div>
+        <p style="margin:0; font-size:13px; color:#455a64;">
+
+        </p>
+    </div>
+
+    <!-- Crear o editar estudiante (PUT/POST) -->
+    <div class="card">
+        <h2>Crear / Editar Estudiante</h2>
+        <p style="font-size:13px; color:#455a64;">
+
+        </p>
+
+        <form id="student-form" onsubmit="return false;">
+            <input type="hidden" id="student-id">
+
+            <div class="row">
+                <div class="col-50">
+                    <label for="nombre">Nombre</label>
+                    <input id="nombre" maxlength="255" placeholder="Nombre completo" required>
+                </div>
+                <div class="col-50">
+                    <label for="correo">Correo</label>
+                    <input id="correo" type="text" placeholder="correo@gmail.com"  autocomplete="off" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-50">
+                    <label for="telefono">Teléfono </label>
+                    <input id="telefono" maxlength="8" title="Debe contener 8 nùmeros" required>
+                </div>
+                <div class="col-50">
+                    <label for="idioma">Idioma</label>
+                    <select id="idioma" required>
+                        <option value="">Seleccione un idioma</option>
+                        <option value="inglés">Inglés</option>
+                        <option value="español">Español</option>
+                        <option value="francés">Francés</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-green" onclick="submitStudent()">Guardar</button>
+                <button class="btn btn-outline" type="button" onclick="resetForm()">Eliminar datos </button>
+            </div>
+
+            <div id="form-error" style="margin-top:8px; font-size:13px; color:#d32f2f;"></div>
+        </form>
+    </div>
+
+    <!-- Buscar por ID -->
+    <div class="card">
+        <h2>Consultar estudiante por ID</h2>
+        <div class="row">
+            <div class="col-50">
+                <label for="search-id">ID del estudiante</label>
+                <input id="search-id" type="number" min="1" placeholder="Ingrese un ID">
+            </div>
+            <div class="col-50" style="display:flex; align-items:flex-end; gap:8px;">
+                <button class="btn btn-blue" type="button" onclick="searchById()">Buscar</button>
+            </div>
+        </div>
+
+        <div id="detail-box" style="margin-top:12px;">
+            <div class="detail-label">Nombre</div>
+            <div class="detail-value" id="detail-nombre">—</div>
+
+            <div class="detail-label">Correo</div>
+            <div class="detail-value" id="detail-correo">—</div>
+
+            <div class="detail-label">Teléfono</div>
+            <div class="detail-value" id="detail-telefono">—</div>
+
+            <div class="detail-label">Idioma</div>
+            <div class="detail-value" id="detail-idioma">—</div>
+
+            <div style="margin-top:8px;">
+                <button class="btn btn-green" type="button" onclick="loadDetailIntoForm()">Editar completo</button>
+                <button class="btn btn-outline" type="button" onclick="loadPartial()">Ediciòn Parcial</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de estudiantes (GET /students) -->
+    <div class="card">
+        <h2>LISTA DE ESTUDIANTES </h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>Idioma</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="students-table-body">
+            <!-- Se llena dinámicamente -->
+            </tbody>
+        </table>
+        <div id="list-error" style="margin-top:8px; font-size:13px; color:#d32f2f;"></div>
+    </div>
+</div>
+
+<script>
+    const apiBase = '/students';
+
+    async function fetchJson(url, options = {}) {
+        const res = await fetch(url, {
+            headers: { 'Content-Type': 'application/json' },
+            ...options
+        });
+        if (!res.ok) {
+            let msg = 'Error ' + res.status;
+            try {
+                const data = await res.json();
+                if (typeof data === 'string') {
+                    msg = data;
+                } else if (data.message) {
+                    msg = data.message;
+                } else if (Object.values(data).length > 0) {
+                    msg = Object.values(data).join(' | ');
+                }
+            } catch (_) {}
+            throw new Error(msg);
+        }
+        if (res.status === 204) {
+            return null;
+        }
+        return res.json();
+    }
+
+    async function loadStudents() {
+        const tbody = document.getElementById('students-table-body');
+        const errorBox = document.getElementById('list-error');
+        tbody.innerHTML = '';
+        errorBox.textContent = '';
+        try {
+            const students = await fetchJson(apiBase);
+            students.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><a href="#" class="tag-id" onclick="selectFromList(${s.id}); return false;">#${s.id}</a></td>
+                    <td>${s.nombre}</td>
+                    <td>${s.correo}</td>
+                    <td>${s.numeroTelefono}</td>
+                    <td>${s.idioma}</td>
+                    <td>
+                        <button class="btn btn-green" onclick="editFromList(${s.id})">Editar</button>
+                        <button class="btn btn-outline" onclick="partialFromList(${s.id})">Editar parcial</button>
+                        <button class="btn btn-red" onclick="deleteStudent(${s.id})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (e) {
+            errorBox.textContent = e.message;
+        }
+    }
+
+    async function submitStudent() {
+        const id = document.getElementById('student-id').value;
+        const nombre = document.getElementById('nombre').value.trim();
+        const correo = document.getElementById('correo').value.trim();
+        const telefono = document.getElementById('telefono').value.trim();
+        const idioma = document.getElementById('idioma').value;
+        const errorBox = document.getElementById('form-error');
+        errorBox.textContent = '';
+
+        const payload = { nombre, correo, numeroTelefono: telefono, idioma };
+
+        try {
+            if (id) {
+                await fetchJson(`${apiBase}/${id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+            } else {
+                await fetchJson(apiBase, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+            }
+            resetForm();
+            await loadStudents();
+        } catch (e) {
+            errorBox.textContent = e.message;
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('student-id').value = '';
+        document.getElementById('nombre').value = '';
+        document.getElementById('correo').value = '';
+        document.getElementById('telefono').value = '';
+        document.getElementById('idioma').value = '';
+        document.getElementById('form-error').textContent = '';
+    }
+
+    async function searchById() {
+        const id = document.getElementById('search-id').value;
+        if (!id) return;
+        try {
+            const s = await fetchJson(`${apiBase}/${id}`);
+            fillDetail(s);
+        } catch (e) {
+            clearDetail();
+            document.getElementById('detail-nombre').textContent = e.message;
+        }
+    }
+
+    function fillDetail(s) {
+        document.getElementById('detail-nombre').textContent = s.nombre;
+        document.getElementById('detail-correo').textContent = s.correo;
+        document.getElementById('detail-telefono').textContent = s.numeroTelefono;
+        document.getElementById('detail-idioma').textContent = s.idioma;
+        document.getElementById('search-id').value = s.id;
+    }
+
+    function clearDetail() {
+        document.getElementById('detail-nombre').textContent = '—';
+        document.getElementById('detail-correo').textContent = '—';
+        document.getElementById('detail-telefono').textContent = '—';
+        document.getElementById('detail-idioma').textContent = '—';
+        document.getElementById('search-id').value = '';
+    }
+
+    async function selectFromList(id) {
+        try {
+            const s = await fetchJson(`${apiBase}/${id}`);
+            fillDetail(s);
+        } catch (e) {
+            clearDetail();
+        }
+    }
+
+    async function editFromList(id) {
+        try {
+            const s = await fetchJson(`${apiBase}/${id}`);
+            loadStudentIntoForm(s);
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+
+    async function partialFromList(id) {
+        try {
+            const s = await fetchJson(`${apiBase}/${id}`);
+            document.getElementById('search-id').value = s.id;
+            fillDetail(s);
+            loadPartial();
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+
+    function loadStudentIntoForm(s) {
+        document.getElementById('student-id').value = s.id;
+        document.getElementById('nombre').value = s.nombre;
+        document.getElementById('correo').value = s.correo;
+        document.getElementById('telefono').value = s.numeroTelefono;
+        document.getElementById('idioma').value = s.idioma;
+    }
+
+    function loadDetailIntoForm() {
+        const id = document.getElementById('search-id').value;
+        if (!id) return;
+        fetchJson(`${apiBase}/${id}`)
+            .then(loadStudentIntoForm)
+            .catch(e => alert(e.message));
+    }
+
+    function loadPartial() {
+        const id = document.getElementById('search-id').value;
+        if (!id) return;
+        fetchJson(`${apiBase}/${id}`)
+            .then(s => {
+                document.getElementById('student-id').value = s.id;
+                document.getElementById('nombre').value = s.nombre;
+                document.getElementById('correo').value = s.correo;
+                document.getElementById('telefono').value = s.numeroTelefono;
+                document.getElementById('idioma').value = s.idioma;
+            })
+            .catch(e => alert(e.message));
+    }
+
+    async function deleteStudent(id) {
+        if (!confirm('¿Seguro que deseas eliminar al estudiante #' + id + '?')) {
+            return;
+        }
+        try {
+            await fetchJson(`${apiBase}/${id}`, { method: 'DELETE' });
+            await loadStudents();
+            const searchId = document.getElementById('search-id').value;
+            if (searchId == id) {
+                clearDetail();
+            }
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+
+    // Inicializar
+    loadStudents();
+</script>
+</body>
+</html>
